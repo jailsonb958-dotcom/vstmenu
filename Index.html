@@ -1,1 +1,403 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cardápio - Café, Almoço e Jantar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">Menu</div>
+      <div>
+        <h1 id="title"></h1>
+        <div class="small" id="subtitle"></div>
+      </div>
+    </div>
+    <div class="top-controls">
+      <nav class="buttons" role="tablist">
+        <button class="btn active" data-meal="breakfast" id="btn-breakfast">Café</button>
+        <button class="btn" data-meal="lunch" id="btn-lunch">Almoço</button>
+        <button class="btn" data-meal="dinner" id="btn-dinner">Jantar</button>
+      </nav>
+      <button class="lang-btn" id="open-lang">🌐 Idioma</button>
+    </div>
+  </header>
 
+  <main>
+    <section id="breakfast" class="meal-section">
+      <div class="subsection">
+        <h2 id="breakfast-title">Café</h2>
+        <p class="small" id="breakfast-desc">Seleção completa para começar bem o dia — pães, pratos quentes, iogurte, frutas e seleção do chef.</p>
+      </div>
+      <div class="cards" id="breakfast-cards">
+        <!-- cards populated by JS -->
+      </div>
+    </section>
+
+    <section id="lunch" class="meal-section" style="display:none">
+      <div class="subsection">
+        <h2 id="lunch-title">Almoço - Entradas</h2>
+      </div>
+      <div class="cards" id="lunch-apps"></div>
+
+      <div class="subsection">
+        <h2 id="lunch-main-title">Almoço - Principais</h2>
+      </div>
+      <div class="cards" id="lunch-mains"></div>
+
+      <div class="subsection">
+        <h2 id="lunch-dessert-title">Almoço - Sobremesas</h2>
+      </div>
+      <div class="cards" id="lunch-desserts"></div>
+    </section>
+
+    <section id="dinner" class="meal-section" style="display:none">
+      <div class="subsection">
+        <h2 id="dinner-title">Jantar - Entradas</h2>
+      </div>
+      <div class="cards" id="dinner-apps"></div>
+
+      <div class="subsection">
+        <h2 id="dinner-main-title">Jantar - Principais</h2>
+      </div>
+      <div class="cards" id="dinner-mains"></div>
+
+      <div class="subsection">
+        <h2 id="dinner-dessert-title">Jantar - Sobremesas</h2>
+      </div>
+      <div class="cards" id="dinner-desserts"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="small">Feito com ♥ — toque em "Idioma" para escolher entre Português, English, Français ou Español.</div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 id="modal-title">Escolha o idioma</h3>
+      <p class="small">O conteúdo será atualizado instantaneamente.</p>
+      <div class="lang-grid" style="margin-top:12px">
+        <div class="lang-item" data-lang="pt">Português</div>
+        <div class="lang-item" data-lang="en">English</div>
+        <div class="lang-item" data-lang="fr">Français</div>
+        <div class="lang-item" data-lang="es">Español</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px;gap:8px">
+        <button class="btn" id="close-modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATA: menu in Portuguese (complete). Other languages will fallback to portuguese where not translated.
+    const menu = {
+      breakfast: [
+        {img:'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=800&q=60', name:'Couvert', desc:'Pães - 1 Brioche inteiro ou 2 pedaços de Baguete, 2 croissants e 1 pão 7 grãos. Manteiga, geleias e requeijão.'},
+        {img:'https://images.unsplash.com/photo-1517244683849-8f3f7a4b0c2b?auto=format&fit=crop&w=800&q=60', name:'Café e Sucos', desc:'Café coado, expresso, cappuccino, suco de laranja e suco verde.'},
+        {img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=60', name:'Iogurte com Granola', desc:'Iogurte integral natural com granola e mirtilo.'},
+        {img:'https://images.unsplash.com/photo-1496412705862-e0088f16f791?auto=format&fit=crop&w=800&q=60', name:'Frutas laminadas', desc:'Melão, mamão, kiwi, manga, abacaxi e melancia.'},
+        {img:'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=60', name:'Tábua de frios', desc:'Presunto Royale, Presunto Alemão, Pastrami, Queijos variados.'},
+        {img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=60', name:'Pratos quentes', desc:'Ovo cozido, frito, omelete recheado, ovos mexidos, tapioca, mingau e pancakes.'},
+        {img:'https://images.unsplash.com/photo-1533777324565-a040eb52fac2?auto=format&fit=crop&w=800&q=60', name:'Seleção do Chef', desc:'Ovos benedict, Avocado Toast, Ovos mexidos com salmão, Açaí com granola.'}
+      ],
+      lunch: {
+        apps:[
+          {img:'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=60', name:'Salada de cavaquinha', desc:'Alface romana, lâminas de parmesão, cavaquinha torrada, azeite verde e molho caesar.'},
+          {img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=60', name:'Nosso salmão defumado', desc:'Lâminas de salmão curado com alcaparras, aneto, pão nórdico e crème fraîche.'},
+          {img:'https://images.unsplash.com/photo-1547592166-8bfb6d9d6d9f?auto=format&fit=crop&w=800&q=60', name:'Tartar de mignon', desc:'Filé mignon picado, picles de pepino, alcaparra, cebola roxa e gema curada.'},
+          {img:'https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&q=60', name:'Gazpacho', desc:'Sopa fria de tomate, pepino, pimentão e croutons de brioche.'},
+          {img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60', name:'Creme forestier', desc:'Capuccino de cogumelo com mousse de foie e cogumelos salteados.'}
+        ],
+        mains:[
+          {img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60', name:'Namorado na manteiga de capim limão', desc:'Filé de peixe selado, legumes crocantes e molho thai com espuma de limão.'},
+          {img:'https://images.unsplash.com/photo-1514512364185-6d0f24ae9a16?auto=format&fit=crop&w=800&q=60', name:'Polvo grelhado', desc:'Polvo grelhado com arroz negro cremoso, tomate assado e maionese de wasabi.'},
+          {img:'https://images.unsplash.com/photo-1543352634-2c6b607c2f59?auto=format&fit=crop&w=800&q=60', name:'Cassarole de carne confit', desc:'Filé mignon picado, molho demi-glace, massa rubane e cogumelos.'},
+          {img:'https://images.unsplash.com/photo-1540420773423-12f3b9f0b1c6?auto=format&fit=crop&w=800&q=60', name:'Mignon na Manteiga "maître d\'hotel"', desc:'Tournedos selado com manteiga temperada, batata Ana e demi glace.'},
+          {img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60', name:'"Steak" de couve-flor', desc:'Couve flor grelhada com purê de batata baroa e manteiga noisette de shoyo.'}
+        ],
+        desserts:[
+          {img:'https://images.unsplash.com/photo-1505250469679-203ad9ced0cb?auto=format&fit=crop&w=800&q=60', name:'La Belle Surprise', desc:'Sobremesa surpresa do chef.'},
+          {img:'https://images.unsplash.com/photo-1527515637460-3f8d2b3b5b8a?auto=format&fit=crop&w=800&q=60', name:'Coco Chocolat', desc:'Coco e chocolate em preparo refinado.'},
+          {img:'https://images.unsplash.com/photo-1512058564366-c9e3d2ebf3f1?auto=format&fit=crop&w=800&q=60', name:'Louis XV', desc:'Sobremesa clássica elaborada.'},
+          {img:'https://images.unsplash.com/photo-1506086679523-0b2e3fb5b6a6?auto=format&fit=crop&w=800&q=60', name:'Tarte Tatin de Maçã', desc:'Maçãs caramelizadas com massa folhada invertida.'},
+          {img:'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=800&q=60', name:'Seleção de Sorbet', desc:'Variedade de sorbets refrescantes.'}
+        ]
+      },
+      dinner: {
+        apps:[
+          {img:'./img/salada.jpg', name:'Salada de Chèvre Chaud', desc:'Mix de folhas, torrada de brioche, queijo de cabra, nozes caramelizadas e redução de balsâmico.'},
+          {img:'./img/tucupi.jpg', name:'Camarão no tucupi', desc:'Camarões selados com redução de tucupi e farofinha de uarani.'},
+          {img:'./img/ovo.jpg', name:'Ovo Parfait', desc:'Ovo em baixa temperatura, creme parmentier, cebola caramelizada, bacon e cogumelos.'},
+          {img:'./img/bisque.jpg', name:'Bisque em massa folheada', desc:'Sopa bisque de crustáceos servida em massa folhada.'}
+        ],
+        mains:[
+          {img:'./img/tournedor.jpg', name:'Tournedor à Bordelaise', desc:'Tournedos com molho bordelaise, batatas fondant e chalotas caramelizadas.'},
+          {img:'./img/cupim.jpg', name:'Cupim 7 horas', desc:'Cupim cozido por 7 horas, musseline de aipim e demi glace.'},
+          {img:'./img/cordeiro.jpg', name:'Paleta de cordeiro braseada', desc:'Paleta de cordeiro braseada com musseline e telha de laranja.'},
+          {img:'./img/peixe-bisque.webp', name:'Peixe ao molho bisque', desc:'Namorado cozido no vapor com bobó de camarões e molho bisque.'},
+          {img:'./img/namorado.jpg', name:'Namorado trufado ao Dieppoise', desc:'Namorado selado com salsa trufada, caviar mujol e molho de vôngole.'},
+          {img:'./img/risoto.jpg', name:'Risoto de Camarão', desc:'Risoto com bisque, camarão grelhado e maionese de wasabi.'},
+          {img:'./img/inhoque.jpg', name:'Homemade Gnocchi', desc:'Nhoque artesanal com texturas de cogumelo e espuma de cogumelo.'}
+        ],
+        desserts:[
+          {img:'./img/tartalete.jpg', name:'Tartelette Fondue de Chocolate Belga', desc:'Tartelette com molho fondue de chocolate belga.'},
+          {img:'./img/cocada.jpg', name:'Cocada de Forno', desc:'Cocada caramelizada assada.'},
+          {img:'./img/bombe.jpg', name:'Bombe Alaska', desc:'Bombe Alaska flamejada com merengue e sorvete.'},
+          {img:'./img/crepe.jpg', name:'Crepe Suzette', desc:'Crepe servido com molho de laranja flambado.'}
+        ]
+      }
+    }
+
+    // --- TRANSLATIONS (partial). If a translation for a string is missing, app will show Portuguese fallback.
+    const translations = {
+      en: {
+        title: '', 
+        subtitle: '', 
+        'Café':'Breakfast', 
+        'Almoço':'Lunch', 
+        'Jantar':'Dinner',
+        'Escolha o idioma':'Choose language', 
+        'O conteúdo será atualizado instantaneamente.':'Content will update instantly.'
+      },
+      es: {
+        title: '', subtitle: ''
+      },
+      fr: {
+        title: '', subtitle: ''
+      }
+    }
+
+    // dishTranslations: map original Portuguese names to translations
+    const dishTranslations = {
+      pt: {},
+      en: {
+        'Couvert': {name: 'Couvert', desc: 'Breads selection — brioche, baguette, croissants and multi-grain.'},
+        'Café e Sucos': {name: 'Coffee & Juices', desc: 'Filtered coffee, espresso, cappuccino, orange juice and green juice.'},
+        'Iogurte com Granola': {name: 'Yogurt with Granola', desc: 'Natural whole yogurt with granola and blueberries.'},
+        'Frutas laminadas': {name: 'Sliced Fresh Fruits', desc: 'Melon, papaya, kiwi, mango, pineapple and watermelon.'},
+        'Tábua de frios': {name: 'Cold Cuts Board', desc: 'Assorted hams and cheeses.'},
+        'Pratos quentes': {name: 'Hot Plates', desc: 'Boiled or fried eggs, omelet, tapioca, porridge and pancakes.'},
+        'Seleção do Chef': {name: 'Chef’s Selection', desc: 'Eggs benedict, avocado toast, scrambled eggs with salmon, açaí.'},
+
+        'Salada de cavaquinha': {name: 'Cavaquinha Salad', desc: 'Romaine, parmesan, toasted crustacean, green oil and Caesar dressing.'},
+        'Nosso salmão defumado': {name: 'Our Smoked Salmon', desc: 'Cured salmon slices with capers, dill and Nordic bread.'},
+        'Tartar de mignon': {name: 'Beef Mignon Tartare', desc: 'Finely chopped fillet seasoned and served with cured yolk and greens.'},
+        'Gazpacho': {name: 'Gazpacho', desc: 'Chilled tomato soup with vegetables and brioche croutons.'},
+        'Creme forestier': {name: 'Creme Forestier', desc: 'Mushroom cappuccino with foie mousse and sautéed mushrooms.'},
+
+        'Namorado na manteiga de capim limão': {name: 'White Fish with Lemon Grass Butter', desc: 'Seared fish with crisp vegetables and Thai-style sauce.'},
+        'Polvo grelhado': {name: 'Grilled Octopus', desc: 'Grilled octopus with black rice and roasted tomato.'},
+        'Cassarole de carne confit': {name: 'Confit Beef Casserole', desc: 'Minced fillet with demi-glace, fresh pasta and mushrooms.'},
+        'Mignon na Manteiga "maître d\'hotel"': {name: 'Mignon with Maître d\'Hotel Butter', desc: 'Seared tournedos with herb butter and layered potatoes.'},
+        '"Steak" de couve-flor': {name: 'Cauliflower “Steak”', desc: 'Grilled cauliflower served with mashed arracacha and soy-noisette.'},
+
+        'La Belle Surprise': {name: 'La Belle Surprise', desc: 'Chef\'s surprise dessert.'},
+        'Coco Chocolat': {name: 'Coco Chocolat', desc: 'Coconut and chocolate refined dessert.'},
+        'Louis XV': {name: 'Louis XV', desc: 'A classic elaborate dessert.'},
+        'Tarte Tatin de Maçã': {name: 'Apple Tarte Tatin', desc: 'Caramelized apples with inverted puff pastry.'},
+        'Seleção de Sorbet': {name: 'Sorbet Selection', desc: 'Assorted refreshing sorbets.'},
+
+        'Salada de Chèvre Chaud': {name: 'Chèvre Chaud Salad', desc: 'Mixed leaves, brioche toast, goat cheese and caramelized walnuts.'},
+        'Camarão no tucupi': {name: 'Shrimp in Tucupi', desc: 'Seared shrimp with tucupi reduction and crunchy manioc.'},
+        'Ovo Parfait': {name: 'Oeuf Parfait', desc: 'Low-temperature egg with parmentier cream, caramelized onion and bacon.'},
+        'Bisque em massa folheada': {name: 'Bisque in Puff Pastry', desc: 'Crustacean bisque served under puff pastry.'},
+
+        'Tournedor à Bordelaise': {name: 'Tournedos à la Bordelaise', desc: 'Tournedos with bordelaise sauce, fondant potatoes and caramelized shallots.'},
+        'Cupim 7 horas': {name: '7-hour Brisket', desc: 'Slow-cooked beef brisket with manioc mousseline and demi-glace.'},
+        'Paleta de cordeiro braseada': {name: 'Braised Lamb Shoulder', desc: 'Braised lamb with root purée and orange tuile.'},
+        'Peixe ao molho bisque': {name: 'Fish with Bisque Sauce', desc: 'Steamed white fish with shrimp bobó and bisque.'},
+        'Namorado trufado ao Dieppoise': {name: 'Truffled White Fish Dieppoise', desc: 'Seared fish with truffle salsa, caviar and clam sauce.'},
+        'Risoto de Camarão': {name: 'Shrimp Risotto', desc: 'Bisque-infused risotto with grilled shrimp and wasabi mayo.'},
+        'Homemade Gnocchi': {name: 'Homemade Gnocchi', desc: 'Artisanal potato gnocchi with mushroom textures and grana.'}
+      },
+      fr: {
+        'Couvert': {name: 'Couvert', desc: 'Sélection de pains — brioche, baguette, croissants et multigrains.'},
+        'Café e Sucos': {name: 'Café & Jus', desc: 'Café filtré, expresso, cappuccino, jus d’orange et jus vert.'},
+        'Iogurte com Granola': {name: 'Yaourt avec Granola', desc: 'Yaourt entier nature avec granola et myrtilles.'},
+        'Frutas laminadas': {name: 'Fruits Frais Tranchés', desc: 'Melon, papaye, kiwi, mangue, ananas et pastèque.'},
+        'Tábua de frios': {name: 'Plateau de Charcuterie', desc: 'Assortiment de jambons et fromages.'},
+        'Pratos quentes': {name: 'Plats Chauds', desc: 'Œufs bouillis ou frits, omelette, tapioca, porridge et pancakes.'},
+        'Seleção do Chef': {name: 'Sélection du Chef', desc: 'Œufs bénédicte, toast à l’avocat, œufs brouillés au saumon, açaï.'},
+
+        'Salada de cavaquinha': {name: 'Salade de Langoustine', desc: 'Laitue romaine, parmesan, crustacé toasté, huile verte et sauce César.'},
+        'Nosso salmão defumado': {name: 'Notre Saumon Fumé', desc: 'Tranches de saumon curé avec câpres, aneth et pain nordique.'},
+        'Tartar de mignon': {name: 'Tartare de Bœuf Mignon', desc: 'Filet finement haché assaisonné et servi avec jaune curé et verdures.'},
+        'Gazpacho': {name: 'Gaspacho', desc: 'Soupe froide de tomates avec légumes et croûtons de brioche.'},
+        'Creme forestier': {name: 'Crème Forestière', desc: 'Cappuccino de champignons avec mousse de foie et champignons sautés.'},
+
+        'Namorado na manteiga de capim limão': {name: 'Poisson Blanc au Beurre de Citronnelle', desc: 'Poisson saisi avec légumes croquants et sauce thaï.'},
+        'Polvo grelhado': {name: 'Poulpe Grillé', desc: 'Poulpe grillé avec riz noir et tomate rôtie.'},
+        'Cassarole de carne confit': {name: 'Cocotte de Bœuf Confit', desc: 'Filet haché avec demi-glace, pâtes fraîches et champignons.'},
+        'Mignon na Manteiga "maître d\'hotel"': {name: 'Mignon au Beurre Maître d’Hôtel', desc: 'Tournedos saisi au beurre aux herbes et pommes de terre en couches.'},
+        '"Steak" de couve-flor': {name: '“Steak” de Chou-Fleur', desc: 'Chou-fleur grillé avec purée de racine et soja-noisette.'},
+
+        'La Belle Surprise': {name: 'La Belle Surprise', desc: 'Dessert surprise du chef.'},
+        'Coco Chocolat': {name: 'Coco Chocolat', desc: 'Dessert raffiné à la noix de coco et au chocolat.'},
+        'Louis XV': {name: 'Louis XV', desc: 'Un dessert classique et élaboré.'},
+        'Tarte Tatin de Maçã': {name: 'Tarte Tatin aux Pommes', desc: 'Pommes caramélisées avec pâte feuilletée inversée.'},
+        'Seleção de Sorbet': {name: 'Sélection de Sorbets', desc: 'Sorbets rafraîchissants assortis.'},
+
+        'Salada de Chèvre Chaud': {name: 'Salade de Chèvre Chaud', desc: 'Mélange de feuilles, brioche toastée, fromage de chèvre et noix caramélisées.'},
+        'Camarão no tucupi': {name: 'Crevettes au Tucupi', desc: 'Crevettes saisies avec réduction de tucupi et manioc croustillant.'},
+        'Ovo Parfait': {name: 'Oeuf Parfait', desc: 'Œuf à basse température avec crème parmentière, oignon caramélisé et bacon.'},
+        'Bisque em massa folheada': {name: 'Bisque en Feuilleté', desc: 'Bisque de crustacés servie sous pâte feuilletée.'},
+
+        'Tournedor à Bordelaise': {name: 'Tournedos à la Bordelaise', desc: 'Tournedos avec sauce bordelaise, pommes fondantes et échalotes caramélisées.'},
+        'Cupim 7 horas': {name: 'Poitrine de Bœuf 7 Heures', desc: 'Poitrine mijotée lentement avec mousseline de manioc et demi-glace.'},
+        'Paleta de cordeiro braseada': {name: 'Épaule d’Agneau Braisée', desc: 'Agneau braisé avec purée de racines et tuile à l’orange.'},
+        'Peixe ao molho bisque': {name: 'Poisson à la Bisque', desc: 'Poisson blanc vapeur avec bobó de crevettes et bisque.'},
+        'Namorado trufado ao Dieppoise': {name: 'Poisson Blanc Truffé Dieppoise', desc: 'Poisson saisi avec salsa de truffe, caviar et sauce aux palourdes.'},
+        'Risoto de Camarão': {name: 'Risotto aux Crevettes', desc: 'Risotto infusé à la bisque avec crevettes grillées et mayonnaise au wasabi.'},
+        'Homemade Gnocchi': {name: 'Gnocchis Maison', desc: 'Gnocchis artisanaux de pomme de terre avec textures de champignons et grana.'}
+        },
+
+        es: {
+        'Couvert': {name: 'Cubierto', desc: 'Selección de panes — brioche, baguette, croissants y multigrano.'},
+        'Café e Sucos': {name: 'Café y Jugos', desc: 'Café filtrado, expreso, capuchino, jugo de naranja y jugo verde.'},
+        'Iogurte com Granola': {name: 'Yogur con Granola', desc: 'Yogur natural entero con granola y arándanos.'},
+        'Frutas laminadas': {name: 'Frutas Frescas Laminadas', desc: 'Melón, papaya, kiwi, mango, piña y sandía.'},
+        'Tábua de frios': {name: 'Tabla de Fiambres', desc: 'Selección de jamones y quesos.'},
+        'Pratos quentes': {name: 'Platos Calientes', desc: 'Huevos hervidos o fritos, tortilla, tapioca, avena y panqueques.'},
+        'Seleção do Chef': {name: 'Selección del Chef', desc: 'Huevos benedictinos, tostada de aguacate, huevos revueltos con salmón, açaí.'},
+
+        'Salada de cavaquinha': {name: 'Ensalada de Langostino', desc: 'Lechuga romana, parmesano, crustáceo tostado, aceite verde y salsa César.'},
+        'Nosso salmão defumado': {name: 'Nuestro Salmón Ahumado', desc: 'Láminas de salmón curado con alcaparras, eneldo y pan nórdico.'},
+        'Tartar de mignon': {name: 'Tartar de Solomillo', desc: 'Filete picado finamente sazonado y servido con yema curada y brotes.'},
+        'Gazpacho': {name: 'Gazpacho', desc: 'Sopa fría de tomate con verduras y crutones de brioche.'},
+        'Creme forestier': {name: 'Crema Forestière', desc: 'Capuchino de setas con mousse de foie y champiñones salteados.'},
+
+        'Namorado na manteiga de capim limão': {name: 'Pescado Blanco con Mantequilla de Hierba Limón', desc: 'Pescado sellado con vegetales crocantes y salsa estilo thai.'},
+        'Polvo grelhado': {name: 'Pulpo a la Parrilla', desc: 'Pulpo a la parrilla con arroz negro y tomate asado.'},
+        'Cassarole de carne confit': {name: 'Cazuela de Carne Confitada', desc: 'Filete picado con demi-glace, pasta fresca y setas.'},
+        'Mignon na Manteiga "maître d\'hotel"': {name: 'Solomillo con Mantequilla Maître d’Hôtel', desc: 'Tournedos sellado con mantequilla de hierbas y papas laminadas.'},
+        '"Steak" de couve-flor': {name: '“Steak” de Coliflor', desc: 'Coliflor a la parrilla con puré de raíces y salsa de soja y avellana.'},
+
+        'La Belle Surprise': {name: 'La Belle Sorpresa', desc: 'Postre sorpresa del chef.'},
+        'Coco Chocolat': {name: 'Coco Chocolat', desc: 'Postre refinado de coco y chocolate.'},
+        'Louis XV': {name: 'Luis XV', desc: 'Un postre clásico y elaborado.'},
+        'Tarte Tatin de Maçã': {name: 'Tarta Tatin de Manzana', desc: 'Manzanas caramelizadas con hojaldre invertido.'},
+        'Seleção de Sorbet': {name: 'Selección de Sorbets', desc: 'Variedad de sorbets refrescantes.'},
+
+        'Salada de Chèvre Chaud': {name: 'Ensalada de Chèvre Chaud', desc: 'Mezcla de hojas, brioche tostado, queso de cabra y nueces caramelizadas.'},
+        'Camarão no tucupi': {name: 'Camarones en Tucupi', desc: 'Camarones sellados con reducción de tucupi y mandioca crujiente.'},
+        'Ovo Parfait': {name: 'Huevo Parfait', desc: 'Huevo a baja temperatura con crema parmentier, cebolla caramelizada y tocino.'},
+        'Bisque em massa folheada': {name: 'Bisque en Hojaldre', desc: 'Bisque de crustáceos servida bajo hojaldre.'},
+
+        'Tournedor à Bordelaise': {name: 'Tournedos a la Bordelesa', desc: 'Tournedos con salsa bordelesa, papas fondant y chalotas caramelizadas.'},
+        'Cupim 7 horas': {name: 'Pecho de Res 7 Horas', desc: 'Pecho cocido lentamente con muselina de mandioca y demi-glace.'},
+        'Paleta de cordeiro braseada': {name: 'Paleta de Cordero Braseada', desc: 'Cordero braseado con puré de raíces y teja de naranja.'},
+        'Peixe ao molho bisque': {name: 'Pescado con Salsa Bisque', desc: 'Pescado blanco al vapor con bobó de camarón y bisque.'},
+        'Namorado trufado ao Dieppoise': {name: 'Pescado Blanco Trufado Dieppoise', desc: 'Pescado sellado con salsa de trufa, caviar y salsa de almejas.'},
+        'Risoto de Camarão': {name: 'Risotto de Camarón', desc: 'Risotto infusionado en bisque con camarones a la parrilla y mayonesa de wasabi.'},
+        'Homemade Gnocchi': {name: 'Ñoquis Caseros', desc: 'Ñoquis artesanales de papa con texturas de setas y grana padano.'}
+        }
+
+    };
+
+    // Utility to create card DOM
+    function createCard(item){
+      const div = document.createElement('div'); div.className='card';
+      div.innerHTML = `
+        <img src="${item.img}" alt="${escapeHtml(item.name)}" />
+        <div class="body">
+          <h3>${escapeHtml(item.name)}</h3>
+          <p>${escapeHtml(item.desc)}</p>
+        </div>`;
+      return div;
+    }
+
+    function escapeHtml(text){return (text+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+    // render menus with optional language translations
+    function renderMenu(lang='pt'){
+      // helper to localize a dish
+      function localize(d){
+        const map = dishTranslations[lang] || {};
+        const translated = map[d.name];
+        return {
+          img: d.img,
+          name: translated && translated.name ? translated.name : d.name,
+          desc: translated && translated.desc ? translated.desc : d.desc
+        };
+      }
+
+      // breakfast
+      const breakfastEl = document.getElementById('breakfast-cards'); breakfastEl.innerHTML='';
+      menu.breakfast.forEach(i=> breakfastEl.appendChild(createCard(localize(i))));
+
+      // lunch apps/mains/desserts
+      const lunchApps = document.getElementById('lunch-apps'); lunchApps.innerHTML=''; menu.lunch.apps.forEach(i=> lunchApps.appendChild(createCard(localize(i))));
+      const lunchMains = document.getElementById('lunch-mains'); lunchMains.innerHTML=''; menu.lunch.mains.forEach(i=> lunchMains.appendChild(createCard(localize(i))));
+      const lunchDesserts = document.getElementById('lunch-desserts'); lunchDesserts.innerHTML=''; menu.lunch.desserts.forEach(i=> lunchDesserts.appendChild(createCard(localize(i))));
+
+      // dinner
+      const dinnerApps = document.getElementById('dinner-apps'); dinnerApps.innerHTML=''; menu.dinner.apps.forEach(i=> dinnerApps.appendChild(createCard(localize(i))));
+      const dinnerMains = document.getElementById('dinner-mains'); dinnerMains.innerHTML=''; menu.dinner.mains.forEach(i=> dinnerMains.appendChild(createCard(localize(i))));
+      const dinnerDesserts = document.getElementById('dinner-desserts'); dinnerDesserts.innerHTML=''; menu.dinner.desserts.forEach(i=> dinnerDesserts.appendChild(createCard(localize(i))));
+    }
+
+    // initial populate
+    renderMenu('pt');
+
+    // meal switching
+    document.querySelectorAll('.btn[data-meal]').forEach(btn=>btn.addEventListener('click',e=>{
+      document.querySelectorAll('.btn[data-meal]').forEach(b=>b.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      const meal = e.currentTarget.dataset.meal;
+      document.querySelectorAll('.meal-section').forEach(s=>s.style.display='none');
+      document.getElementById(meal).style.display='block';
+      // smooth scroll to main
+      window.scrollTo({top:80,behavior:'smooth'});
+    }));
+
+    // modal
+    const modal = document.getElementById('modal');
+    document.getElementById('open-lang').addEventListener('click',()=>modal.style.display='flex');
+    document.getElementById('close-modal').addEventListener('click',()=>modal.style.display='none');
+    modal.addEventListener('click',e=>{ if(e.target===modal) modal.style.display='none' });
+
+    // translations for UI labels
+    function applyLanguage(lang){
+      const t = translations[lang] || {};
+      document.getElementById('title').textContent = t.title || '';
+      document.getElementById('subtitle').textContent = t.subtitle || '';
+      document.getElementById('btn-breakfast').textContent = t['Café'] || (lang==='en'?'Breakfast': lang==='es'?'Desayuno': lang==='fr'?'Petit-déjeuner':'Café');
+      document.getElementById('btn-lunch').textContent = t['Almoço'] || (lang==='en'?'Lunch': lang==='es'?'Almuerzo': lang==='fr'?'Déjeuner':'Almoço');
+      document.getElementById('btn-dinner').textContent = t['Jantar'] || (lang==='en'?'Dinner': lang==='es'?'Cena': lang==='fr'?'Dîner':'Jantar');
+
+      document.getElementById('breakfast-title').textContent = (lang==='en'?'Breakfast': lang==='es'?'Desayuno': lang==='fr'?'Petit-déjeuner':'Café');
+      document.getElementById('breakfast-desc').textContent = (lang==='en'?'Full selection to start your day — breads, hot plates, yogurt, fruits and chef selection.': (lang==='es'?'Selección completa para empezar el día — panes, platos calientes, yogur, frutas y selección del chef.': (lang==='fr'?'Sélection complète pour bien commencer la journée — pains, plats chauds, yaourt, fruits et sélection du chef.':'Seleção completa para começar bem o dia — pães, pratos quentes, iogurte, frutas e seleção do chef.')));
+
+      document.getElementById('lunch-title').textContent = (lang==='en'?'Lunch - Starters': lang==='es'?'Almuerzo - Entradas': lang==='fr'?'Déjeuner - Entrées':'Almoço - Entradas');
+      document.getElementById('lunch-main-title').textContent = (lang==='en'?'Lunch - Mains': lang==='es'?'Almuerzo - Principales': lang==='fr'?'Déjeuner - Plats Principaux':'Almoço - Principais');
+      document.getElementById('lunch-dessert-title').textContent = (lang==='en'?'Lunch - Desserts': lang==='es'?'Almuerzo - Postres': lang==='fr'?'Déjeuner - Desserts':'Almoço - Sobremesas');
+
+      document.getElementById('dinner-title').textContent = (lang==='en'?'Dinner - Starters': lang==='es'?'Cena - Entradas': lang==='fr'?'Dîner - Entrées':'Jantar - Entradas');
+      document.getElementById('dinner-main-title').textContent = (lang==='en'?'Dinner - Mains': lang==='es'?'Cena - Principales': lang==='fr'?'Dîner - Plats Principaux':'Jantar - Principais');
+      document.getElementById('dinner-dessert-title').textContent = (lang==='en'?'Dinner - Desserts': lang==='es'?'Cena - Postres': lang==='fr'?'Dîner - Desserts':'Jantar - Sobremesas');
+
+      // render menu with dish translations when available
+      renderMenu(lang);
+
+      // small aria-live toast
+      const live = document.createElement('div'); live.setAttribute('aria-live','polite'); live.style.position='fixed'; live.style.left='-9999px'; live.textContent = (t['O conteúdo será atualizado instantaneamente.'] || 'Idioma alterado'); document.body.appendChild(live);
+      setTimeout(()=>live.remove(),1200);
+    }
+
+    // wire up language selector in modal
+    document.querySelectorAll('.lang-item').forEach(item=> item.addEventListener('click', ()=>{
+      const lang = item.dataset.lang;
+      applyLanguage(lang);
+      modal.style.display='none';
+    }));
+
+    // initialize language to pt
+    applyLanguage('pt');
+
+  </script>
+</body>
+  </html>
