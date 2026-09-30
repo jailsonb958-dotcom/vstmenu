@@ -3,30 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cardápio - Café, Almoço e Jantar</title>
+  <meta name="description" content="Explore o cardápio VST para café da manhã, almoço e jantar, com pratos e sobremesas selecionados." />
+  <meta name="theme-color" content="#f5f1e8" />
+  <title>Menu VST | Café, Almoço e Jantar</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
     <div class="brand">
-      <div class="logo">Menu</div>
+      <div class="logo" aria-hidden="true">VST</div>
       <div>
-        <h1 id="title"></h1>
-        <div class="small" id="subtitle"></div>
+        <h1 id="title">Menu VST</h1>
+        <div class="small" id="subtitle">Café · Almoço · Jantar</div>
       </div>
     </div>
     <div class="top-controls">
-      <nav class="buttons" role="tablist">
-        <button class="btn active" data-meal="breakfast" id="btn-breakfast">Café</button>
-        <button class="btn" data-meal="lunch" id="btn-lunch">Almoço</button>
-        <button class="btn" data-meal="dinner" id="btn-dinner">Jantar</button>
+      <nav class="buttons" role="tablist" aria-label="Escolha uma refeição">
+        <button class="btn active" type="button" role="tab" aria-selected="true" aria-controls="breakfast" data-meal="breakfast" id="btn-breakfast">Café</button>
+        <button class="btn" type="button" role="tab" aria-selected="false" aria-controls="lunch" data-meal="lunch" id="btn-lunch">Almoço</button>
+        <button class="btn" type="button" role="tab" aria-selected="false" aria-controls="dinner" data-meal="dinner" id="btn-dinner">Jantar</button>
       </nav>
-      <button class="lang-btn" id="open-lang">🌐 Idioma</button>
+      <button class="lang-btn" type="button" id="open-lang" aria-haspopup="dialog" aria-controls="modal">Idioma</button>
     </div>
   </header>
 
   <main>
-    <section id="breakfast" class="meal-section">
+    <section class="welcome" aria-labelledby="welcome-title">
+      <p class="eyebrow">UMA EXPERIÊNCIA À MESA</p>
+      <h2 id="welcome-title">Sabores que convidam<br> a ficar.</h2>
+      <p>Da primeira pausa do dia ao último brinde da noite, descubra uma seleção feita para apreciar sem pressa.</p>
+      <span class="welcome-mark" aria-hidden="true">VST&nbsp; · &nbsp;MENU</span>
+    </section>
+    <section id="breakfast" class="meal-section" role="tabpanel" aria-labelledby="btn-breakfast">
       <div class="subsection">
         <h2 id="breakfast-title">Café</h2>
         <p class="small" id="breakfast-desc">Seleção completa para começar bem o dia — pães, pratos quentes, iogurte, frutas e seleção do chef.</p>
@@ -36,7 +44,7 @@
       </div>
     </section>
 
-    <section id="lunch" class="meal-section" style="display:none">
+    <section id="lunch" class="meal-section" role="tabpanel" aria-labelledby="btn-lunch" hidden>
       <div class="subsection">
         <h2 id="lunch-title">Almoço - Entradas</h2>
       </div>
@@ -53,7 +61,7 @@
       <div class="cards" id="lunch-desserts"></div>
     </section>
 
-    <section id="dinner" class="meal-section" style="display:none">
+    <section id="dinner" class="meal-section" role="tabpanel" aria-labelledby="btn-dinner" hidden>
       <div class="subsection">
         <h2 id="dinner-title">Jantar - Entradas</h2>
       </div>
@@ -72,22 +80,22 @@
   </main>
 
   <footer>
-    <div class="small">Feito com ♥ — toque em "Idioma" para escolher entre Português, English, Français ou Español.</div>
+    <div class="small">Menu VST <span aria-hidden="true">·</span> Escolha uma refeição e explore os sabores.</div>
   </footer>
 
   <!-- Modal -->
-  <div class="modal-backdrop" id="modal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
       <h3 id="modal-title">Escolha o idioma</h3>
       <p class="small">O conteúdo será atualizado instantaneamente.</p>
       <div class="lang-grid" style="margin-top:12px">
-        <div class="lang-item" data-lang="pt">Português</div>
-        <div class="lang-item" data-lang="en">English</div>
-        <div class="lang-item" data-lang="fr">Français</div>
-        <div class="lang-item" data-lang="es">Español</div>
+        <button class="lang-item" type="button" data-lang="pt">Português</button>
+        <button class="lang-item" type="button" data-lang="en">English</button>
+        <button class="lang-item" type="button" data-lang="fr">Français</button>
+        <button class="lang-item" type="button" data-lang="es">Español</button>
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:14px;gap:8px">
-        <button class="btn" id="close-modal">Fechar</button>
+        <button class="btn" type="button" id="close-modal">Fechar</button>
       </div>
     </div>
   </div>
@@ -115,7 +123,7 @@
         mains:[
           {img:'./img/IMG-20251130-WA0042.jpg', name:'Namorado na manteiga de capim limão', desc:'Filé de peixe selado, legumes crocantes e molho thai com espuma de limão.'},
           {img:'./img/polvo.jpg', name:'Polvo grelhado', desc:'Polvo grelhado com arroz negro cremoso, tomate assado e maionese de wasabi.'},
-          {img:'./img/cassarole.jpg', name:'Cassarole de carne confit', desc:'Filé mignon picado, molho demi-glace, massa rubane e cogumelos.'},
+          {img:'./img/sem-imagem.png', name:'Cassarole de carne confit', desc:'Filé mignon picado, molho demi-glace, massa rubane e cogumelos.'},
           {img:'./img/mingnon.jpg', name:'Mignon na Manteiga "maître d\'hotel"', desc:'Tournedos selado com manteiga temperada, batata Ana e demi glace.'},
           {img:'./img/couve-flor.jpg', name:'"Steak" de couve-flor', desc:'Couve flor grelhada com purê de batata baroa e manteiga noisette de shoyo.'}
         ],
@@ -155,8 +163,8 @@
     // --- TRANSLATIONS (partial). If a translation for a string is missing, app will show Portuguese fallback.
     const translations = {
       en: {
-        title: '', 
-        subtitle: '', 
+        title: 'VST Menu',
+        subtitle: 'Breakfast · Lunch · Dinner',
         'Café':'Breakfast', 
         'Almoço':'Lunch', 
         'Jantar':'Dinner',
@@ -164,10 +172,10 @@
         'O conteúdo será atualizado instantaneamente.':'Content will update instantly.'
       },
       es: {
-        title: '', subtitle: ''
+        title: 'Menú VST', subtitle: 'Desayuno · Almuerzo · Cena'
       },
       fr: {
-        title: '', subtitle: ''
+        title: 'Menu VST', subtitle: 'Petit-déjeuner · Déjeuner · Dîner'
       }
     }
 
@@ -303,7 +311,7 @@
     function createCard(item){
       const div = document.createElement('div'); div.className='card';
       div.innerHTML = `
-        <img src="${item.img}" alt="${escapeHtml(item.name)}" />
+        <img src="${item.img}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async" />
         <div class="body">
           <h3>${escapeHtml(item.name)}</h3>
           <p>${escapeHtml(item.desc)}</p>
@@ -346,26 +354,39 @@
 
     // meal switching
     document.querySelectorAll('.btn[data-meal]').forEach(btn=>btn.addEventListener('click',e=>{
-      document.querySelectorAll('.btn[data-meal]').forEach(b=>b.classList.remove('active'));
-      e.currentTarget.classList.add('active');
+      document.querySelectorAll('.btn[data-meal]').forEach(b=>{
+        const selected = b === e.currentTarget;
+        b.classList.toggle('active', selected);
+        b.setAttribute('aria-selected', String(selected));
+      });
       const meal = e.currentTarget.dataset.meal;
-      document.querySelectorAll('.meal-section').forEach(s=>s.style.display='none');
-      document.getElementById(meal).style.display='block';
-      // smooth scroll to main
-      window.scrollTo({top:80,behavior:'smooth'});
+      document.querySelectorAll('.meal-section').forEach(section=>{
+        section.hidden = section.id !== meal;
+      });
     }));
 
     // modal
     const modal = document.getElementById('modal');
-    document.getElementById('open-lang').addEventListener('click',()=>modal.style.display='flex');
-    document.getElementById('close-modal').addEventListener('click',()=>modal.style.display='none');
-    modal.addEventListener('click',e=>{ if(e.target===modal) modal.style.display='none' });
+    const languageButton = document.getElementById('open-lang');
+    const languageDialog = modal.querySelector('[role="dialog"]');
+    function closeLanguageDialog(){
+      modal.hidden = true;
+      languageButton.focus();
+    }
+    languageButton.addEventListener('click',()=>{
+      modal.hidden = false;
+      languageDialog.focus();
+    });
+    document.getElementById('close-modal').addEventListener('click',closeLanguageDialog);
+    modal.addEventListener('click',e=>{ if(e.target===modal) closeLanguageDialog() });
+    modal.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLanguageDialog() });
 
     // translations for UI labels
     function applyLanguage(lang){
       const t = translations[lang] || {};
-      document.getElementById('title').textContent = t.title || '';
-      document.getElementById('subtitle').textContent = t.subtitle || '';
+      document.documentElement.lang = lang;
+      document.getElementById('title').textContent = t.title || 'Menu VST';
+      document.getElementById('subtitle').textContent = t.subtitle || 'Café · Almoço · Jantar';
       document.getElementById('btn-breakfast').textContent = t['Café'] || (lang==='en'?'Breakfast': lang==='es'?'Desayuno': lang==='fr'?'Petit-déjeuner':'Café');
       document.getElementById('btn-lunch').textContent = t['Almoço'] || (lang==='en'?'Lunch': lang==='es'?'Almuerzo': lang==='fr'?'Déjeuner':'Almoço');
       document.getElementById('btn-dinner').textContent = t['Jantar'] || (lang==='en'?'Dinner': lang==='es'?'Cena': lang==='fr'?'Dîner':'Jantar');
@@ -393,7 +414,7 @@
     document.querySelectorAll('.lang-item').forEach(item=> item.addEventListener('click', ()=>{
       const lang = item.dataset.lang;
       applyLanguage(lang);
-      modal.style.display='none';
+      closeLanguageDialog();
     }));
 
     // initialize language to pt
