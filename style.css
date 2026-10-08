@@ -74,33 +74,13 @@ nav.buttons { display: flex; align-items: center; gap: 4px; padding: 4px; border
 .lang-btn:hover { background: var(--surface); }
 
 main { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
-.welcome {
-  position: relative;
-  overflow: hidden;
-  margin: 38px 0 48px;
-  padding: clamp(36px, 7vw, 76px);
-  border-radius: 8px 88px 8px 8px;
-  background: var(--forest);
-  color: #fffdf8;
-  isolation: isolate;
-}
-.welcome::after {
-  position: absolute;
-  z-index: -1;
-  top: -155px;
-  right: -55px;
-  width: 440px;
-  height: 440px;
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 50%;
-  box-shadow: 0 0 0 36px rgba(255,255,255,.035), 0 0 0 72px rgba(255,255,255,.025);
-  content: '';
-}
-.eyebrow { margin: 0 0 18px; color: #e2bd9a; font-size: 10px; font-weight: 700; letter-spacing: .22em; }
-.welcome h2 { max-width: 620px; margin: 0; font-family: var(--serif); font-size: clamp(42px, 7vw, 78px); font-weight: 400; letter-spacing: -.045em; line-height: .98; }
-.welcome > p:not(.eyebrow) { max-width: 470px; margin: 22px 0 0; color: rgba(255,253,248,.78); font-size: 15px; line-height: 1.8; }
-.welcome-mark { position: absolute; right: 38px; bottom: 30px; color: rgba(255,253,248,.56); font-size: 10px; letter-spacing: .2em; }
-.meal-section { padding: 2px 0 24px; }
+
+/* The old static welcome copy was removed from the visual layout.
+   This prevents untranslated Portuguese marketing text from appearing when
+   switching languages and keeps the menu focused on the actual dishes. */
+.welcome { display: none !important; }
+
+.meal-section { padding: 28px 0 24px; }
 .subsection { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 34px 0 16px; }
 .subsection h2 { margin: 0; font-family: var(--serif); font-size: clamp(25px, 3vw, 34px); font-weight: 400; letter-spacing: -.03em; }
 #breakfast > .subsection { display: block; margin-top: 0; }
@@ -123,6 +103,30 @@ main { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
 .card p { margin: 9px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
 @keyframes appear { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* Breakfast photography for cards that still use the generic placeholder.
+   Images are hosted by Pexels and are used only when the menu item has no local photo. */
+#breakfast-cards .card:nth-child(1) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/27846221/pexels-photo-27846221.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+#breakfast-cards .card:nth-child(2) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/7332846/pexels-photo-7332846.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+#breakfast-cards .card:nth-child(3) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/27846221/pexels-photo-27846221.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+#breakfast-cards .card:nth-child(4) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/253419/pexels-photo-253419.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+#breakfast-cards .card:nth-child(5) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/27846221/pexels-photo-27846221.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+#breakfast-cards .card:nth-child(6) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/37282595/pexels-photo-37282595.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+#breakfast-cards .card:nth-child(7) img[src*="sem-imagem"] {
+  content: url("https://images.pexels.com/photos/37282595/pexels-photo-37282595.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+
 footer { padding: 36px 24px 44px; border-top: 1px solid var(--line); text-align: center; }
 footer .small { font-size: 12px; }
 .modal-backdrop { position: fixed; z-index: 80; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(17,31,24,.58); backdrop-filter: blur(5px); }
@@ -133,43 +137,9 @@ footer .small { font-size: 12px; }
 .lang-item { min-height: 48px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 5px 16px 5px 5px; background: transparent; color: var(--ink); cursor: pointer; text-align: left; transition: border-color .2s ease, background .2s ease; }
 .lang-item:hover { border-color: var(--forest); background: var(--paper); }
 
-/* The welcome copy is the one static block that was not part of the JS translation map.
-   The existing language switcher updates <html lang="…">, so keep the DOM intact and
-   localize this prominent copy with :lang() without changing the menu data. */
-html:lang(en) .welcome h2,
-html:lang(fr) .welcome h2,
-html:lang(es) .welcome h2,
-html:lang(en) .welcome > p:not(.eyebrow),
-html:lang(fr) .welcome > p:not(.eyebrow),
-html:lang(es) .welcome > p:not(.eyebrow),
-html:lang(en) .welcome .eyebrow,
-html:lang(fr) .welcome .eyebrow,
-html:lang(es) .welcome .eyebrow {
-  font-size: 0;
-}
-html:lang(en) .welcome h2::before { content: 'Flavors that invite you\A to stay.'; }
-html:lang(fr) .welcome h2::before { content: 'Des saveurs qui\A invitent à rester.'; }
-html:lang(es) .welcome h2::before { content: 'Sabores que invitan\A a quedarse.'; }
-html:lang(en) .welcome > p:not(.eyebrow)::before { content: 'From the first pause of the day to the last toast of the night, discover a selection made to be enjoyed without rushing.'; }
-html:lang(fr) .welcome > p:not(.eyebrow)::before { content: 'De la première pause de la journée au dernier toast du soir, découvrez une sélection à savourer sans se presser.'; }
-html:lang(es) .welcome > p:not(.eyebrow)::before { content: 'Desde la primera pausa del día hasta el último brindis de la noche, descubre una selección para disfrutar sin prisa.'; }
-html:lang(en) .welcome .eyebrow::before { content: 'AN EXPERIENCE AT THE TABLE'; }
-html:lang(fr) .welcome .eyebrow::before { content: 'UNE EXPÉRIENCE À TABLE'; }
-html:lang(es) .welcome .eyebrow::before { content: 'UNA EXPERIENCIA EN LA MESA'; }
-html:lang(en) .welcome h2::before,
-html:lang(fr) .welcome h2::before,
-html:lang(es) .welcome h2::before { white-space: pre-line; font-size: inherit; }
-html:lang(en) .welcome > p:not(.eyebrow)::before,
-html:lang(fr) .welcome > p:not(.eyebrow)::before,
-html:lang(es) .welcome > p:not(.eyebrow)::before,
-html:lang(en) .welcome .eyebrow::before,
-html:lang(fr) .welcome .eyebrow::before,
-html:lang(es) .welcome .eyebrow::before { font-size: inherit; }
-
 @media (max-width: 900px) {
   header { padding-right: 22px; padding-left: 22px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .welcome { margin-top: 26px; }
 }
 @media (max-width: 620px) {
   header { position: relative; flex-wrap: wrap; gap: 12px; padding: 13px 18px 12px; }
@@ -181,11 +151,7 @@ html:lang(es) .welcome .eyebrow::before { font-size: inherit; }
   .btn { flex: 1; padding: 9px 10px; font-size: 12px; }
   .lang-btn { padding: 10px 12px; font-size: 12px; }
   main { width: min(100% - 32px, 520px); }
-  .welcome { margin: 18px 0 34px; padding: 34px 26px 38px; border-top-right-radius: 60px; }
-  .welcome::after { top: -90px; right: -230px; }
-  .welcome h2 { font-size: clamp(42px, 13vw, 60px); }
-  .welcome > p:not(.eyebrow) { max-width: 340px; font-size: 14px; }
-  .welcome-mark { right: 21px; bottom: 17px; font-size: 8px; }
+  .meal-section { padding-top: 18px; }
   .cards { grid-template-columns: 1fr; gap: 13px; }
   .card { display: grid; grid-template-columns: 116px minmax(0, 1fr); border-radius: 5px 22px 5px 5px; }
   .card img { width: 116px; height: 100%; min-height: 148px; }
