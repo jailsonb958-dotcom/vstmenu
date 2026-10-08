@@ -133,6 +133,39 @@ footer .small { font-size: 12px; }
 .lang-item { min-height: 48px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 5px 16px 5px 5px; background: transparent; color: var(--ink); cursor: pointer; text-align: left; transition: border-color .2s ease, background .2s ease; }
 .lang-item:hover { border-color: var(--forest); background: var(--paper); }
 
+/* The welcome copy is the one static block that was not part of the JS translation map.
+   The existing language switcher updates <html lang="…">, so keep the DOM intact and
+   localize this prominent copy with :lang() without changing the menu data. */
+html:lang(en) .welcome h2,
+html:lang(fr) .welcome h2,
+html:lang(es) .welcome h2,
+html:lang(en) .welcome > p:not(.eyebrow),
+html:lang(fr) .welcome > p:not(.eyebrow),
+html:lang(es) .welcome > p:not(.eyebrow),
+html:lang(en) .welcome .eyebrow,
+html:lang(fr) .welcome .eyebrow,
+html:lang(es) .welcome .eyebrow {
+  font-size: 0;
+}
+html:lang(en) .welcome h2::before { content: 'Flavors that invite you\A to stay.'; }
+html:lang(fr) .welcome h2::before { content: 'Des saveurs qui\A invitent à rester.'; }
+html:lang(es) .welcome h2::before { content: 'Sabores que invitan\A a quedarse.'; }
+html:lang(en) .welcome > p:not(.eyebrow)::before { content: 'From the first pause of the day to the last toast of the night, discover a selection made to be enjoyed without rushing.'; }
+html:lang(fr) .welcome > p:not(.eyebrow)::before { content: 'De la première pause de la journée au dernier toast du soir, découvrez une sélection à savourer sans se presser.'; }
+html:lang(es) .welcome > p:not(.eyebrow)::before { content: 'Desde la primera pausa del día hasta el último brindis de la noche, descubre una selección para disfrutar sin prisa.'; }
+html:lang(en) .welcome .eyebrow::before { content: 'AN EXPERIENCE AT THE TABLE'; }
+html:lang(fr) .welcome .eyebrow::before { content: 'UNE EXPÉRIENCE À TABLE'; }
+html:lang(es) .welcome .eyebrow::before { content: 'UNA EXPERIENCIA EN LA MESA'; }
+html:lang(en) .welcome h2::before,
+html:lang(fr) .welcome h2::before,
+html:lang(es) .welcome h2::before { white-space: pre-line; font-size: inherit; }
+html:lang(en) .welcome > p:not(.eyebrow)::before,
+html:lang(fr) .welcome > p:not(.eyebrow)::before,
+html:lang(es) .welcome > p:not(.eyebrow)::before,
+html:lang(en) .welcome .eyebrow::before,
+html:lang(fr) .welcome .eyebrow::before,
+html:lang(es) .welcome .eyebrow::before { font-size: inherit; }
+
 @media (max-width: 900px) {
   header { padding-right: 22px; padding-left: 22px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
